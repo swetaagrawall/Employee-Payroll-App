@@ -69,6 +69,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+		<groupId>org.projectlombok</groupId>
+		<artifactId>lombok-maven</artifactId>
+		<version>1.18.20.0</version>
+		<type>pom</type>
+	</dependency>
 	</dependencies>
 
 	<build>
