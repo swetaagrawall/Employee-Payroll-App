@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class EmployeeDTO {
     private String name;
     private long salary;
-
 }

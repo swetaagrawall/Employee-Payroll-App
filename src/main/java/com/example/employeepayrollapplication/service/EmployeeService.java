@@ -1,57 +1,67 @@
 package com.example.employeepayrollapplication.service;
 import com.example.employeepayrollapplication.dto.EmployeeDTO;
+import com.example.employeepayrollapplication.model.Employee;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class EmployeeService {
-    private List<EmployeeDTO> employeeList = new ArrayList<>();
+
+    private final List<Employee> employeeList = new ArrayList<>();
+    private long idCounter = 1;
 
     // Create Employee
-    public EmployeeDTO addEmployee(EmployeeDTO employee) {
+    public EmployeeDTO addEmployee(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee(idCounter++, employeeDTO.getName(), employeeDTO.getSalary());
         employeeList.add(employee);
-        return employee;
+        log.info("ADDED EMPLOYEE");
+        return new EmployeeDTO(employee.getName(), employee.getSalary());
     }
 
-    //Delete employee by name
-    public boolean deleteEmployeeByName(String name){
-        for(EmployeeDTO employee:employeeList){
-            if(employee.getName().equalsIgnoreCase(name)) {
-                employeeList.remove(employee);
-                return true;
-            }
-        }
-        return false;
+    // Get all Employees
+    public List<Employee> getAllEmployees() {
+        log.info("GET ALL EMPLOYEES");
+        return employeeList;
     }
 
-    //Update Employee by name
-    public EmployeeDTO updateEmployeeByName(String name,EmployeeDTO updatedEmployee){
-        for (EmployeeDTO employee:employeeList){
-            if(employee.getName().equalsIgnoreCase(name))
-            {
-                employee.setName(updatedEmployee.getName());
-                employee.setSalary(updatedEmployee.getSalary());
-                return employee;
+    // Get Employee by ID
+    public Employee getEmployeeById(Long id) {
+        log.info("GET EMPLOYEE BY ID");
+        for (Employee emp : employeeList) {
+            if (emp.getId().equals(id)) {
+                return emp;
             }
         }
         return null;
     }
 
-    //Get List of Employee
-    public List<EmployeeDTO> getAllEmployees() {
-        return employeeList;
-    }
-
-    // Read Employee by Name
-    public List<EmployeeDTO> getEmployeesByName(String name) {
-        List<EmployeeDTO> matchingEmployees = new ArrayList<>();
-        for (EmployeeDTO employee : employeeList) {
-            if (employee.getName().equalsIgnoreCase(name)) { // Case-insensitive match
-                matchingEmployees.add(employee);
+    // Update Employee by ID
+    public EmployeeDTO updateEmployee(Long id, EmployeeDTO employeeDTO) {
+        for (Employee emp : employeeList) {
+            if (emp.getId().equals(id)) {
+                emp.setName(employeeDTO.getName());
+                emp.setSalary(employeeDTO.getSalary());
+                log.info("UPDATED EMPLOYEE");
+                return new EmployeeDTO(emp.getName(), emp.getSalary());
             }
         }
-        return matchingEmployees;
+        log.warn("EMPLOYEE NOT EXISTING");
+        return null;
+    }
+
+    // Delete Employee by ID
+    public boolean deleteEmployee(Long id) {
+        for (Employee emp : employeeList) {
+            if (emp.getId().equals(id)) {
+                employeeList.remove(emp);
+                log.info("DELETED EMPLOYEE");
+                return true;
+            }
+        }
+        return false;
     }
 }

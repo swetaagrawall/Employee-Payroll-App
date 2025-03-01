@@ -14,9 +14,9 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
     private String name;
+
     @Column(name = "salary", nullable = false)
-    private double salary;
+    private long salary;
 
 }

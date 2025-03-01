@@ -1,52 +1,70 @@
 package com.example.employeepayrollapplication.controller;
 import com.example.employeepayrollapplication.dto.EmployeeDTO;
+import com.example.employeepayrollapplication.model.Employee;
 import com.example.employeepayrollapplication.service.EmployeeService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/employee")
+@CrossOrigin(origins = "*")
 public class EmployeeController {
+
     @Autowired
-    private EmployeeService employeePayrollService;
+    private EmployeeService employeeService;
 
     @GetMapping("/welcome")
     public String welcomeMessage() {
         return "Welcome to Employee Payroll App!";
     }
 
+    // Create Employee
     @PostMapping("/add")
-    public EmployeeDTO addEmployee(@RequestBody EmployeeDTO employee) {
-        return employeePayrollService.addEmployee(employee);
+    public EmployeeDTO addEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        log.debug("Received Employee Data: {}", employeeDTO);
+        EmployeeDTO savedEmployee= employeeService.addEmployee(employeeDTO);
+        log.info("Employee created successfully with ID: {}", savedEmployee.getName());
+        return savedEmployee;
     }
 
-    // Update Employee By Name
-    @PutMapping("/update/{name}")
-    public EmployeeDTO updateEmployee(@PathVariable String name, @RequestBody EmployeeDTO updatedEmployee) {
-        return employeePayrollService.updateEmployeeByName(name, updatedEmployee);
+    // Get all Employees
+    @GetMapping
+    public List<Employee> getAllEmployees() {
+        log.info("Fetching all employees");
+        List<Employee> employees = employeeService.getAllEmployees();
+        log.info("Total Employees Retrieved: {}", employees.size());
+        return employeeService.getAllEmployees();
     }
 
-    // Delete Employee By Name
-    @DeleteMapping("/delete/{name}")
-    public String deleteEmployee(@PathVariable String name) {
-        boolean isDeleted = employeePayrollService.deleteEmployeeByName(name);
-        return isDeleted ? "Employee deleted successfully" : "Employee not found";
+    // Get Employee by ID
+    @GetMapping("/{id}")
+    public Employee getEmployeeById(@PathVariable Long id) {
+        log.info("Fetching employee with ID : {}", id);
+        return employeeService.getEmployeeById(id);
     }
 
-    // Get All Employees
-    @GetMapping("/all")
-    public List<EmployeeDTO> getAllEmployees() {
-        return employeePayrollService.getAllEmployees();
+    // Update Employee
+    @PutMapping("/update/{id}")
+    public EmployeeDTO updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO employeeDTO) {
+        log.info("Fetching employee with ID: {}", id);
+        EmployeeDTO employee= employeeService.updateEmployee(id, employeeDTO);
+        log.info("Retrieved Employee: {}", employee);
+        return  employee;
     }
 
-    // Get Employees by Name (New Endpoint)
-    @GetMapping("/name/{name}")
-    public List<EmployeeDTO> getEmployeesByName(@PathVariable String name) {
-        return employeePayrollService.getEmployeesByName(name);
+    // Delete Employee
+    @DeleteMapping("/delete/{id}")
+    public String deleteEmployee(@PathVariable Long id) {
+        log.warn("Received request to delete employee with ID: {}", id);
+        String deleteEmployee= employeeService.deleteEmployee(id) ? "Employee deleted successfully" : "Employee not found";
+        log.warn("Employee with ID: {} deleted successfully", id);
+        return deleteEmployee;
     }
 }
