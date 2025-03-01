@@ -1,5 +1,6 @@
 package com.example.employeepayrollapplication.service;
 import com.example.employeepayrollapplication.dto.EmployeeDTO;
+import com.example.employeepayrollapplication.exception.EmployeeNotFoundException;
 import com.example.employeepayrollapplication.model.Employee;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ public class EmployeeService {
     public EmployeeDTO addEmployee(EmployeeDTO employeeDTO) {
         Employee employee = new Employee(idCounter++, employeeDTO.getName(), employeeDTO.getSalary());
         employeeList.add(employee);
-        log.info("ADDED EMPLOYEE");
+        log.info("ADDED EMPLOYEE: {}", employee);
         return new EmployeeDTO(employee.getName(), employee.getSalary());
     }
 
@@ -28,40 +29,44 @@ public class EmployeeService {
         return employeeList;
     }
 
-    // Get Employee by ID
+    // Get Employee by ID with Exception Handling
     public Employee getEmployeeById(Long id) {
-        log.info("GET EMPLOYEE BY ID");
+        log.info("Fetching employee with ID: {}", id);
         for (Employee emp : employeeList) {
             if (emp.getId().equals(id)) {
                 return emp;
             }
         }
-        return null;
+        log.warn("Employee with ID {} not found", id);
+        throw new EmployeeNotFoundException("Employee with ID " + id + " not found");
     }
 
-    // Update Employee by ID
+    // Update Employee by ID with Exception Handling
     public EmployeeDTO updateEmployee(Long id, EmployeeDTO employeeDTO) {
+        log.info("Updating Employee with ID: {}", id);
         for (Employee emp : employeeList) {
             if (emp.getId().equals(id)) {
                 emp.setName(employeeDTO.getName());
                 emp.setSalary(employeeDTO.getSalary());
-                log.info("UPDATED EMPLOYEE");
+                log.info("UPDATED EMPLOYEE: {}", emp);
                 return new EmployeeDTO(emp.getName(), emp.getSalary());
             }
         }
-        log.warn("EMPLOYEE NOT EXISTING");
-        return null;
+        log.warn("Employee with ID {} not found!", id);
+        throw new EmployeeNotFoundException("Employee with ID " + id + " not found!");
     }
 
-    // Delete Employee by ID
+    // Delete Employee by ID with Exception Handling
     public boolean deleteEmployee(Long id) {
+        log.info("Deleting Employee with ID: {}", id);
         for (Employee emp : employeeList) {
             if (emp.getId().equals(id)) {
                 employeeList.remove(emp);
-                log.info("DELETED EMPLOYEE");
+                log.info("DELETED EMPLOYEE: {}", emp);
                 return true;
             }
         }
-        return false;
+        log.warn("Employee with ID  {} not found", id);
+        throw new EmployeeNotFoundException("Employee with ID " + id + " not found!");
     }
 }
