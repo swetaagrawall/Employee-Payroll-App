@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
@@ -20,22 +22,31 @@ public class EmployeeController {
 
     @PostMapping("/add")
     public EmployeeDTO addEmployee(@RequestBody EmployeeDTO employee) {
-        return new EmployeeDTO(employee.getName(), employee.getSalary());
+        return employeePayrollService.addEmployee(employee);
     }
 
-    @PutMapping("/update")
-    public String updateEmployee() {
-        return "Employee updated successfully!";
+    // Update Employee By Name
+    @PutMapping("/update/{name}")
+    public EmployeeDTO updateEmployee(@PathVariable String name, @RequestBody EmployeeDTO updatedEmployee) {
+        return employeePayrollService.updateEmployeeByName(name, updatedEmployee);
     }
 
-    @DeleteMapping("/delete")
-    public String deleteEmployee() {
-        return "Employee deleted successfully!";
+    // Delete Employee By Name
+    @DeleteMapping("/delete/{name}")
+    public String deleteEmployee(@PathVariable String name) {
+        boolean isDeleted = employeePayrollService.deleteEmployeeByName(name);
+        return isDeleted ? "Employee deleted successfully" : "Employee not found";
     }
 
-    @GetMapping("/get")
-    public EmployeeDTO getEmployeeDetails() {
-        // Calling service to fetch employee details
-        return employeePayrollService.getEmployeeDetails();
+    // Get All Employees
+    @GetMapping("/all")
+    public List<EmployeeDTO> getAllEmployees() {
+        return employeePayrollService.getAllEmployees();
+    }
+
+    // Get Employees by Name (New Endpoint)
+    @GetMapping("/name/{name}")
+    public List<EmployeeDTO> getEmployeesByName(@PathVariable String name) {
+        return employeePayrollService.getEmployeesByName(name);
     }
 }
