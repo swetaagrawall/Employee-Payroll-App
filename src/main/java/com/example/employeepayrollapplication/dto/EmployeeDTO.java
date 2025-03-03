@@ -9,12 +9,13 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeeDTO {
 
-    @NotEmpty(message = "Name cannot be empty")
+    @NotEmpty(message = "Name cannot be Blank")
     @Pattern(regexp = "^[A-Z][a-zA-Z]{2,}(\\s[A-Z][a-zA-Z]+)*$", message = "Name must start with a capital letter and have at least 3 characters")
     private String name;
 
@@ -22,7 +23,7 @@ public class EmployeeDTO {
     @Min(value = 5000, message = "Salary must be greater than or equal to 5000")
     private Double salary;
 
-    @NotEmpty(message = "Gender cannot be empty")
+    @NotEmpty(message = "Gender cannot be blank")
     @Pattern(regexp = "^(Male|Female|Other)$", message = "Gender must be Male, Female, or Other")
     private String gender;
 
@@ -37,6 +38,6 @@ public class EmployeeDTO {
     @NotBlank(message = "Profile Picture URL cannot be Blank")
     private String profilePic;
 
-    @NotEmpty(message = "Department cannot be empty")
+    @NotEmpty(message = "At least one department is required")
     private List<String> department;
 }
