@@ -11,14 +11,11 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import java.time.LocalDateTime;
-
+import java.time.format.DateTimeParseException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    //UC11: Handle Validation Errors (e.g., Invalid Name Format)
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+   @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, Object> errorResponse = new HashMap<>();
@@ -45,5 +42,23 @@ public class GlobalExceptionHandler {
         errorDetails.put("error", "Employee Not Found");
         errorDetails.put("message", ex.getMessage());
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    // Handle Incorrect Date Format
+    @ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<String> handleDateTimeParseException(DateTimeParseException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid date format! Please use 'dd MMM yyyy' (e.g., 01 Mar 2025).");
+    }
+
+    // Handle Custom InvalidDateFormatException
+    @ExceptionHandler(InvalidDateFormatException.class)
+    public ResponseEntity<String> handleInvalidDateFormat(InvalidDateFormatException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    // Handle Generic Exceptions
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGenericException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + ex.getMessage());
     }
 }
