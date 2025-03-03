@@ -9,7 +9,6 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,7 +34,7 @@ public class EmployeeDTO {
     @NotBlank(message = "Note cannot be empty")
     private String note;
 
-    @NotBlank(message = "Profile Picture URL cannot be empty")
+    @NotBlank(message = "Profile Picture URL cannot be Blank")
     private String profilePic;
 
     @NotEmpty(message = "Department cannot be empty")
