@@ -13,6 +13,7 @@ import java.util.List;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 
+
 @Slf4j
 @RestController
 @RequestMapping("/employee")
@@ -36,7 +37,7 @@ public class EmployeeController {
         return ResponseEntity.ok(savedEmployee);
     }
 
-    // Get all Employees
+    // Get All Employees
     @GetMapping
     public ResponseEntity<List<Employee>> getAllEmployees() {
         log.info("Fetching all employees");
@@ -62,7 +63,7 @@ public class EmployeeController {
         return ResponseEntity.ok(updatedEmployee);
     }
 
-    // Delete Employee
+    // Delete Employee By Id
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteEmployee(@PathVariable Long id) {
         log.warn("Received request to delete employee with ID: {}", id);
@@ -74,5 +75,12 @@ public class EmployeeController {
             log.warn("Employee with ID: {} not found", id);
             return ResponseEntity.status(404).body("Employee not found");
         }
+    }
+
+    //Fetch employees by department
+    @GetMapping("/department/{department}")
+    public List<Employee> getEmployeesByDepartment(@PathVariable String department) {
+        log.info("Fetching employees in Sales department");
+        return employeeService.getEmployeesByDepartment(department);
     }
 }
